@@ -1,13 +1,18 @@
 "use client";
 
-import Post from "@/models/post";
-import { WithId } from "mongodb";
 import Link from "next/link";
 
-export default function ListItem({ posts }: { posts: WithId<Post>[] }) {
+interface ListItemType {
+  posts: {
+    _id: string;
+    title?: string;
+  }[];
+}
+
+export default function ListItem({ posts }: ListItemType) {
   return (
     <div>
-      {posts.map((_, i) => {
+      {posts?.map((_, i) => {
         return (
           <div className="list-item" key={i}>
             <Link href={"/detail/" + posts[i]._id}>
@@ -18,7 +23,7 @@ export default function ListItem({ posts }: { posts: WithId<Post>[] }) {
               onClick={(e) => {
                 fetch("/api/post/delete", {
                   method: "DELETE",
-                  body: posts[i]._id.toString(),
+                  body: posts[i]._id,
                 })
                   .then((r) => r.json())
                   .then(() => {
